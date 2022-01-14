@@ -18,22 +18,25 @@
 
             <div class="login-form">
               <el-form
-                :model="userLogin"
+                :model="user"
                 :label-position="labelPosition"
+                :rules="rules"
+                ref="userLogin"
                 label-width="120px"
               >
-                <el-form-item label="">
+                <el-form-item label="" prop="username">
                   <el-input
-                    v-model="userLogin.name"
+                    v-model="user.username"
                     placeholder="请输入用户名/手机号"
                   ></el-input>
                 </el-form-item>
-                <el-form-item label="">
+                <el-form-item label="" prop="password">
                   <el-input
-                    v-model="userLogin.passwd"
+                    v-model="user.password"
                     type="password"
                     autocomplete="off"
                     placeholder="请输入密码"
+                    prop="password"
                   ></el-input>
                 </el-form-item>
                 <el-form-item> </el-form-item>
@@ -41,7 +44,7 @@
                   <el-button
                     class="button-full"
                     type="primary"
-                    @click="submitForm('userLogin')"
+                    @click="handleLogin"
                     >立即登录</el-button
                   >
                 </el-form-item>
@@ -71,26 +74,76 @@
 </template>
 
 <script>
-import { ElMessage } from 'element-plus'
+import { ElMessage } from "element-plus";
+import { reactive, ref, unref, defineComponent } from "vue";
 
 export default {
   name: "Login",
-  data () {
+  setup() {
+    const userLogin = ref(null);
+
+    const user = reactive({
+      username: "",
+      password: "",
+    });
+
+    const rules = reactive({
+      username: [
+        {
+          required: true,
+          message: "请输入用户名",
+          trigger: "blur",
+        },
+        {
+          min: 3,
+          max: 20,
+          message: "用户名应为 3-20 个字符",
+          trigger: "blur",
+        },
+      ],
+      password: [
+        {
+          required: true,
+          message: "请输入密码",
+          trigger: "blur",
+        },
+        {
+          min: 6,
+          message: "密码应不少于6位",
+          trigger: "blur",
+        },
+      ],
+    });
+
+    const handleLogin = async () => {
+      const form = unref(userLogin);
+      if (!form) return;
+      form.validate((valid) => {
+        if (valid) {
+          console.log("submit!");
+          this.$cookies.set("token", "admin");
+          // this.$router.push("/");
+        } else {
+          console.log("error submit!");
+          return false;
+        }
+      });
+    };
+
     return {
-      labelPosition: 'top',
-      userLogin: {
-        name: '',
-        password: '',
-      }
-    }
+      user,
+      rules,
+      userLogin,
+      handleLogin,
+    };
   },
-  methods: {
-    submitForm () {
-      this.$cookies.set("token", "admin")
-      this.$router.push('/')
-    },
-  }
-}
+  data() {
+    return {
+      labelPosition: "top",
+    };
+  },
+  methods: {},
+};
 </script>
 
 <style>
@@ -117,14 +170,14 @@ export default {
 
 #login-banner {
   width: 1090px;
-  height: 690px;
+  height: 780px;
   margin: auto;
   position: relative;
 }
 
 #login-maintainer {
   position: absolute;
-  top: 165px;
+  top: 35%;
   left: 24%;
   display: flex;
 }
@@ -201,10 +254,13 @@ export default {
 
 .links > a {
   padding: 0px 10px;
-  color: #fff;
+  color: #ff6767;
+  font-family: 微软雅黑;
+  font-size: 1.2em;
+  font-weight: 700;
 }
 
 .copyright {
-  color: #fff;
+  color: #ff6767;
 }
 </style>
