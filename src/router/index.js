@@ -3,25 +3,28 @@ import Progress from '@/plugins/nprogress'
 import Cookies from 'js-cookie'
 
 const routes = [
-//   {
-//     path: '/',
-//     name: 'Home',
-//     component: () => import('@/views/layout'),
-//     children: [
-//       {
-//         path: 'graphs',
-//         component: () => import('@/views/graphs'),
-//       },
-//       {
-//         path: 'graphs/edit',
-//         component: () => import('@/views/graphs/edit'),
-//       },
-//     ],
-//   },
   {
     path: '/login',
     name: 'Login',
     component: () => import('@/views/login'),
+    redirect: '/login/',
+    children: [
+        {
+            path: '',
+            name: 'LoginForm',
+            component: () => import('@/views/login/form'),
+        },
+        {
+            path: 'forget',
+            name: 'forgetPasswd',
+            component: () => import('@/views/login/forget'),
+        },
+        {
+            path: 'register',
+            name: 'registerUser',
+            component: () => import('@/views/login/register'),
+        }
+    ]
   },
   {
     path: '/:pathMatch(.*)',
@@ -37,8 +40,8 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   Progress.start()
-
-  if (to.path == '/login') {
+  //
+  if (to.path.startsWith('/login')) {
     next()
   } else {
     let token = Cookies.get('token')

@@ -3,7 +3,7 @@
     <div class="m">
       <div id="login-banner">
         <div id="login-maintainer">
-          <LoginForm></LoginForm>
+          <router-view></router-view>
         </div>
       </div>
     </div>
@@ -21,14 +21,17 @@
 </template>
 
 <script>
-import LoginForm from "./form";
 
 export default {
   name: "Login",
-  components: {
-    LoginForm,
+  data () {
+    return {
+      currentForm: "LoginForm"
+    }
   },
-  methods: {},
+  methods: {
+
+  },
 };
 </script>
 
@@ -58,13 +61,14 @@ export default {
   width: 1090px;
   height: 780px;
   margin: auto;
-  position: relative;
 }
 
 #login-maintainer {
-  position: absolute;
-  top: 35%;
-  left: 24%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .f {

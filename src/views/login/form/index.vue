@@ -44,8 +44,8 @@
       </div>
       <div>
         <div class="login-tips">
-          <router-link to="/login">忘记密码？</router-link>
-          <router-link to="/login">没有账户？立即注册></router-link>
+          <router-link to="/login/forget">忘记密码？</router-link>
+          <router-link to="/login/register">没有账户？立即注册></router-link>
         </div>
       </div>
     </div>
@@ -53,9 +53,10 @@
 </template>
 
 <script>
-import { reactive, ref, unref, defineComponent } from "vue";
+import { reactive, ref, unref } from "vue";
 export default {
-  setup() {
+  name: "LoginForm",
+  setup () {
     const userLogin = ref(null);
 
     const user = reactive({
@@ -113,7 +114,7 @@ export default {
       handleLogin,
     };
   },
-  data() {
+  data () {
     return {
       labelPosition: "top",
     };
