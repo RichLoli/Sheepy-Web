@@ -54,10 +54,15 @@
 
 <script>
 import { reactive, ref, unref } from "vue";
+import { useStore } from 'vuex';
+import { login } from '@/api/login'
+
 export default {
   name: "LoginForm",
   setup () {
     const userLogin = ref(null);
+
+    const $store = useStore();
 
     const user = reactive({
       username: "",
@@ -98,7 +103,7 @@ export default {
       form.validate((valid) => {
         if (valid) {
           console.log("submit!");
-          this.$cookies.set("token", "admin");
+          $store.dispatch("Login", user);
           // this.$router.push("/");
         } else {
           console.log("error submit!");
@@ -111,7 +116,7 @@ export default {
       user,
       rules,
       userLogin,
-      handleLogin,
+      handleLogin
     };
   },
   data () {
@@ -119,6 +124,9 @@ export default {
       labelPosition: "top",
     };
   },
+  methods: {
+
+  }
 };
 </script>
 

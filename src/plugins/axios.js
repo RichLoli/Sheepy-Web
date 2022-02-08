@@ -1,47 +1,27 @@
-import axios from 'axios'
+const VueAxios = {
+    install(app, instance) {
+        if (this.installed) {
+            return;
+        }
+        this.installed = true;
 
-let apiBaseUrl = ''
+        if (!instance) {
+            console.error('You have to install axios');
+            return;
+        }
 
-const service = axios.create({
-  baseURL: apiBaseUrl,
-  timeout: 5000, // 请求超时时间
-})
+        app.config.globalProperties.axios = instance;
 
-const err = (error) => {
-  if (error.response) {
-    let data = error.response.data
-    console.log('------异常响应------', error.response.status)
-  }
-  return Promise.reject(error)
-}
-
-// request interceptor
-service.interceptors.request.use(
-  (config) => {
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
-
-// response interceptor
-service.interceptors.response.use((response) => {
-  return response.data
-}, err)
-
-
-const installer = {
-  vm: {},
-  install(app) {
-    if (this.installed) {
-        return;
+        Object.defineProperties(app.config.globalProperties, {
+            axios: {
+                get: function get() {
+                    return instance;
+                }
+            }
+        });
     }
-    this.installed = true;
-    app.config.globalProperties.$axios = service
-  }
-}
+};
 
-export default (app) => {
-  app.use(installer)
+export {
+    VueAxios,
 }
